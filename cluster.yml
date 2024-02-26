@@ -35,46 +35,14 @@ addons:
   - name: aws-ebs-csi-driver
     wellKnownPolicies:
       ebsCSIController: true
-# apiVersion: eksctl.io/v1alpha5
-# kind: ClusterConfig
-
-# metadata:
-#   name: project-UdaTin
-#   region: us-east-1
-#   version: "1.29"
-# How to run? eksctl create cluster -f cluster.yml
-# Then we need to create the node Group..
-# eksctl create nodegroup \
-#   --cluster project-UdaTin \
-#   --region us-east-1 \
-#   --name managed-nodes \
-#   --node-ami-family Ubuntu2204 \
-#   --node-type m6g.large \
-#   --nodes 2 \
-#   --nodes-min 2 \
-#   --nodes-max 4 \
-#   --ssh-access \
-#   --ssh-public-key ~/.ssh/tinGitlab.pub
-
-# aws eks update-kubeconfig --name <CLUSTER_NAME>
-
-# Then we need to deploy the DB:
-# helm repo add tinProject https://charts.bitnami.com/bitnami
-# helm install postgress-db tinProject/postgresql
-
-# Check it out : kubectl svc
-
-# export POSTGRES_PASSWORD=$(kubectl get secret --namespace default postgress-db-postgresql -o jsonpath="{.data.postgres-password}" | base64 -d)
-# echo $POSTGRES_PASSWORD
-
-# kubectl port-forward --namespace default svc/postgress-db-postgresql 5432:5432
+# kubectl port-forward --namespace default svc/postgress-db-postgresql 5432:5432 & PGPASSWORD="$POSTGRES_PASSWORD" psql --host 127.0.0.1 -U postgres -d postgres -p 5432
 # PGPASSWORD="$POSTGRES_PASSWORD" psql --host 127.0.0.1 -U postgres -d postgres -p 5432
 
 # Seed the DB
-# kubectl port-forward --namespace default svc/postgress-db-postgresql 5432:5432 && PGPASSWORD="$POSTGRES_PASSWORD" psql --host 127.0.0.1 -U postgres -d postgres -p 5432 < ./db/1_create_tables.sql
-# kubectl port-forward --namespace default svc/postgress-db-postgresql 5432:5432 && PGPASSWORD="$POSTGRES_PASSWORD" psql --host 127.0.0.1 -U postgres -d postgres -p 5432 < ./db/2_seed_users.sql
-# kubectl port-forward --namespace default svc/postgress-db-postgresql 5432:5432 && PGPASSWORD="$POSTGRES_PASSWORD" psql --host 127.0.0.1 -U postgres -d postgres -p 5432 < ./db/3_seed_tokens.sql
+# kubectl port-forward --namespace default svc/postgress-db-postgresql 5432:5432 & PGPASSWORD="$POSTGRES_PASSWORD" psql --host 127.0.0.1 -U postgres -d postgres -p 5432 < ./db/1_create_tables.sql
+# kubectl port-forward --namespace default svc/postgress-db-postgresql 5432:5432 & PGPASSWORD="$POSTGRES_PASSWORD" psql --host 127.0.0.1 -U postgres -d postgres -p 5432 < ./db/2_seed_users.sql
+# kubectl port-forward --namespace default svc/postgress-db-postgresql 5432:5432 & PGPASSWORD="$POSTGRES_PASSWORD" psql --host 127.0.0.1 -U postgres -d postgres -p 5432 < ./db/3_seed_tokens.sql
 
 # cd analytics
 #  pip install -r requirements.txt
-# kubectl port-forward --namespace default svc/postgress-db-postgresql 5432:5432 && DB_USERNAME=postgres DB_PASSWORD="$POSTGRES_PASSWORD" python app.py
+# kubectl port-forward --namespace default svc/postgress-db-postgresql 5432:5432 & DB_USERNAME=postgres DB_PASSWORD="$POSTGRES_PASSWORD" python app.py
