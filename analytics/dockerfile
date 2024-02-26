@@ -1,5 +1,5 @@
 # Define base image
-FROM public.ecr.aws/docker/library/python:3.13.0a4-slim-bullseye
+FROM python:3.13.0a4-slim
 
 # Mount the ConfigMap containing database details
 VOLUME ["/config"]
