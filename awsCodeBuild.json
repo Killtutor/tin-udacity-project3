@@ -1,0 +1,16 @@
+{
+    "name": "tin-analytics",
+    "source": {
+        "type": "CODEPIPELINE",
+        "buildspec": "./buildspec.yml"
+    },
+    "artifacts": {
+        "type": "CODEPIPELINE"
+    },
+    "environment": {
+        "type": "LINUX_CONTAINER",
+        "image": "aws/codebuild/standard:5.0",
+        "computeType": "BUILD_GENERAL1_SMALL"
+    },
+    "serviceRole": "arn:aws:iam::597532192256:role/codebuild-role"
+}

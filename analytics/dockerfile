@@ -1,0 +1,22 @@
+# Define base image
+FROM python:3.9
+
+# Mount the ConfigMap containing database details
+VOLUME ["/config"]
+
+# Set working directory
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# Copy environment variables from ConfigMap
+COPY --from=config /config/*.env .
+RUN source /config/*.env
+
+# Copy application code
+COPY . .
+
+# Run the application
+CMD ["python", "app.py"]
