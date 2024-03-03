@@ -4,6 +4,8 @@ FROM public.ecr.aws/docker/library/python:3.13.0a4-slim
 # Set working directory
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y libpq-dev
+
 # Install dependencies
 COPY requirements.txt .
 RUN pip install -r requirements.txt
