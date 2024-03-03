@@ -4,7 +4,7 @@ phases:
   install:
     commands:
       - echo "Installing dependencies.. ."
-      - yum install -y docker gettext jq
+      - yum install -y docker gettext jq gcc gcc-c++ make
       - yum groupinstall 'Development Tools'
   build:
     commands:
