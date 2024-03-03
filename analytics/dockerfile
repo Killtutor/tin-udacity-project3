@@ -4,7 +4,7 @@ FROM public.ecr.aws/docker/library/python:3.9.18
 # Set working directory
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y libpq-dev
+RUN apt-get update && apt-get install -y libpq-dev build-essential
 ARG DB_USERNAME
 ARG DB_PASSWORD
 
