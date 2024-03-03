@@ -12,13 +12,14 @@ phases:
       - echo "Building Docker image... $username"
       - export DB_USERNAME="$username"
       - export DB_PASSWORD="$password"
-      - docker build -t 597532192256.dkr.ecr.us-east-1.amazonaws.com/tin-udacity-repo/analytics-tin:latest ./analytics
+      - docker build -t 597532192256.dkr.ecr.us-east-1.amazonaws.com/tin-udacity-repo:latest ./analytics
   post_build:
     commands:
       - echo "Pushing Docker image to ECR..."
       - AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account | jq -r)
-      - aws ecr get-login-password | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
-      - docker push 597532192256.dkr.ecr.us-east-1.amazonaws.com/tin-udacity-repo/analytics-tin:latest
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
+      - docker tag tin-udacity-repo:latest 597532192256.dkr.ecr.us-east-1.amazonaws.com/tin-udacity-repo:latest
+      - docker push 597532192256.dkr.ecr.us-east-1.amazonaws.com/tin-udacity-repo:latest
 env:
   secrets-manager:
     secret: tincitosql
