@@ -4,7 +4,8 @@ phases:
   install:
     commands:
       - echo "Installing dependencies.. ."
-      - yum install -y docker gettext jq build-essential
+      - yum install -y docker gettext jq
+      - yum groupinstall 'Development Tools'
   build:
     commands:
       - username=$(echo "$secret" | jq -r '.username')
