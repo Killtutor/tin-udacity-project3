@@ -17,7 +17,7 @@ phases:
     commands:
       - echo "Pushing Docker image to ECR..."
       - AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account | jq -r)
-      - aws ecr get-authorization-token --registry-ids $AWS_ACCOUNT_ID | jq -r '.authorizationData[0].authorizationToken' | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
+      - aws ecr get-login-password | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
       - docker push 597532192256.dkr.ecr.us-east-1.amazonaws.com/tin-udacity-repo/analytics-tin:latest
 env:
   secrets-manager:

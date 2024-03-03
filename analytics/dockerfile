@@ -1,5 +1,5 @@
 # Define base image
-FROM public.ecr.aws/docker/library/python:3.9.18
+FROM public.ecr.aws/docker/library/python:3.12
 
 # Set working directory
 WORKDIR /app
