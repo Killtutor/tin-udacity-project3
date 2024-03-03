@@ -7,9 +7,8 @@ phases:
       - yum install -y docker gettext jq
   build:
     commands:
-      - echo "Building Docker image... $username"
-      - username=$(echo "$username" | jq -r '.username')
-      - password=$(echo "$username" | jq -r '.password')
+      - username=$(echo "$secret" | jq -r '.username')
+      - password=$(echo "$secret" | jq -r '.password')
       - echo "Building Docker image... $username"
       - export DB_USERNAME="$username"
       - export DB_PASSWORD="$password"
@@ -22,5 +21,4 @@ phases:
       - docker push 597532192256.dkr.ecr.us-east-1.amazonaws.com/tin-udacity-repo/analytics-tin:latest
 env:
   secrets-manager:
-    username: tincitosql
-    password: tincitosql
+    secret: tincitosql
