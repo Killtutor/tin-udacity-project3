@@ -1,9 +1,6 @@
 # Define base image
 FROM public.ecr.aws/docker/library/python:3.13.0a4-slim
 
-# Mount the ConfigMap containing database details
-VOLUME ["/config"]
-
 # Set working directory
 WORKDIR /app
 
@@ -11,9 +8,9 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-# Copy environment variables from ConfigMap
-COPY --from=config /config/*.env .
-RUN source /config/*.env
+# # Copy environment variables from ConfigMap
+# COPY --from=config /config/*.env .
+# RUN source /config/*.env
 
 # Copy application code
 COPY . .
