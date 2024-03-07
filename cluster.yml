@@ -30,24 +30,9 @@ managedNodeGroups:
         ebs: true
         fsx: true
         efs: true
-
-cloudWatch:
-  clusterLogging:
-    enableTypes: ["*"]
-    logRetentionInDays: 3
+        cloudWatch: true
 
 addons:
   - name: aws-ebs-csi-driver
     wellKnownPolicies:
       ebsCSIController: true
-# kubectl port-forward --namespace default svc/postgress-db-postgresql 5432:5432 & PGPASSWORD="$POSTGRES_PASSWORD" psql --host 127.0.0.1 -U postgres -d postgres -p 5432
-# PGPASSWORD="$POSTGRES_PASSWORD" psql --host 127.0.0.1 -U postgres -d postgres -p 5432
-
-# Seed the DB
-# kubectl port-forward --namespace default svc/postgress-db-postgresql 5432:5432 & PGPASSWORD="$POSTGRES_PASSWORD" psql --host 127.0.0.1 -U postgres -d postgres -p 5432 < ./db/1_create_tables.sql
-# kubectl port-forward --namespace default svc/postgress-db-postgresql 5432:5432 & PGPASSWORD="$POSTGRES_PASSWORD" psql --host 127.0.0.1 -U postgres -d postgres -p 5432 < ./db/2_seed_users.sql
-# kubectl port-forward --namespace default svc/postgress-db-postgresql 5432:5432 & PGPASSWORD="$POSTGRES_PASSWORD" psql --host 127.0.0.1 -U postgres -d postgres -p 5432 < ./db/3_seed_tokens.sql
-
-# cd analytics
-#  pip install -r requirements.txt
-# kubectl port-forward --namespace default svc/postgress-db-postgresql 5432:5432 & DB_USERNAME=postgres DB_PASSWORD="$POSTGRES_PASSWORD" python app.py
