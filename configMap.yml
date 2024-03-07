@@ -3,6 +3,5 @@ kind: ConfigMap
 metadata:
   name: postgres-config
 data:
-  DB_HOST: "postgress-db-postgresql.default.svc.cluster.local"
+  DB_HOST: "postgress-db-postgresql"
   DB_PORT: "5432"
-  DB_NAME: "postgres"

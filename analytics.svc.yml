@@ -17,13 +17,25 @@ spec:
           image: 597532192256.dkr.ecr.us-east-1.amazonaws.com/tin-udacity-repo:latest
           env:
             - name: DB_HOST
-              value: "postgress-db-postgresql"
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: DB_HOST
             - name: DB_PORT
-              value: "5432"
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: DB_PORT
             - name: DB_USERNAME
-              value: "postgres"
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: DB_USERNAME
             - name: DB_PASSWORD
-              value: "CvfO247Sw0"
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: DB_PASSWORD
           imagePullPolicy: "Always"
           ports:
             - containerPort: 5153
@@ -40,3 +52,10 @@ spec:
               port: 5153
             initialDelaySeconds: 5
             timeoutSeconds: 5
+      volumes:
+        - name: my-secret-volume
+          secret:
+            secretName: db-secrets
+        - name: my-configmap-volume
+          configMap:
+            name: postgres-config

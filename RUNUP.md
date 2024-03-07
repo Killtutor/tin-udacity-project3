@@ -25,11 +25,11 @@ WE have to get the credentials to interact with Postgres
 
 - export POSTGRES_PASSWORD=$(kubectl get secret --namespace default postgress-db-postgresql -o jsonpath="{.data.postgres-password}" | base64 -d)
 - echo $POSTGRES_PASSWORD
-  CvfO247Sw0
+  DNs5YYOEvk
 
 Check the DB is running with
 
-- kubectl port-forward --namespace default svc/postgress-db-postgresql 5432:5432 &
+- kubectl port-forward --namespace default svc/postgress-db-postgresql 5432:5432 & PGPASSWORD="$POSTGRES_PASSWORD" psql --host 127.0.0.1 -U postgres -d postgres -p 5432
 - PGPASSWORD="$POSTGRES_PASSWORD" psql --host 127.0.0.1 -U postgres -d postgres -p 5432
 
 Seed the db with the following:
@@ -43,5 +43,9 @@ Seed the db with the following:
 ### fourth lets make the build:
 
 last lastly.. lets deploy the build in my cluster
+
+kubectl apply -f secret.yml
+
+kubectl apply -f configMap.yml
 
 kubectl apply -f analytics.svc.yml
