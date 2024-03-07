@@ -1,77 +1,18 @@
-## Project run up by me:
+# DEVOPS udacity project by tincito
 
-### First
+## What is this project
 
-Create the cluster and the node group
+This project consist of a DB in postgres SQL deployed in a Kubernetes cluster in AWS EKS with and a python Service that allows users to get analytics from the data stored in the DB.
+The database is deployed with Helm chart and the analytics service is deployed with a docker image as a service in our kubernetes cluster
 
-- eksctl create cluster -f cluster.yml
-- aws eks update-kubeconfig --name tin-udacity
+## Technologies Used
 
-### Second
+- Github as our code versioning control and trigger for our CICD pipeline
+- AWS as our cloud provider
+- AWS codeBuild as our docker builder
+- AWS Elastic Container Registry as our docker image repository
+- AWS Elastic Kubernetes Service as our kubernete service
 
-Deploy the Database with helm:
+### How everything get to work?
 
-- helm repo add tinProject https://charts.bitnami.com/bitnami
-- helm install postgress-db tinProject/postgresql
-
-We can check the status of the deploy with..
-
-- kubectl get svc
-- kubectl get pods
-
-The deployment is ready when the kubectl get pods prints that the postgress pod id ready
-
-WE have to get the credentials to interact with Postgres
-
-- export POSTGRES_PASSWORD=$(kubectl get secret --namespace default postgress-db-postgresql -o jsonpath="{.data.postgres-password}" | base64 -d)
-- echo $POSTGRES_PASSWORD
-  MSAI8KOuHJ
-
-Check the DB is running with
-
-- kubectl port-forward --namespace default svc/postgress-db-postgresql 5432:5432
-- PGPASSWORD="$POSTGRES_PASSWORD" psql --host 127.0.0.1 -U postgres -d postgres -p 5432
-
-Seed the db with the following:
-
-- PGPASSWORD="$POSTGRES_PASSWORD" psql --host 127.0.0.1 -U postgres -d postgres -p 5432 < ./db/1_create_tables.sql
-- PGPASSWORD="$POSTGRES_PASSWORD" psql --host 127.0.0.1 -U postgres -d postgres -p 5432 < ./db/2_seed_users.sql
-- PGPASSWORD="$POSTGRES_PASSWORD" psql --host 127.0.0.1 -U postgres -d postgres -p 5432 < ./db/3_seed_tokens.sql
-
-### Trhid
-
-We need to create the ECR repository for our docker image
-
-- aws ecr create-repository --repository-name tin-udacity-repo --region us-east-1
-
-Lets create the role to use codebuild:
-
-- aws iam create-role \
-   --role-name codebuild-role \
-   --assume-role-policy-document '{
-  "Version": "2012-10-17",
-  "Statement": [
-  {
-  "Effect": "Allow",
-  "Principal": {
-  "Service": "codebuild.amazonaws.com"
-  },
-  "Action": "sts:AssumeRole"
-  }
-  ]
-  }'
-
-Attach policies
-
-- aws iam attach-role-policy --role-name codebuild-role --policy-arn arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess
-- aws iam attach-role-policy --role-name codebuild-role --policy-arn arn:aws:iam::aws:policy/AWSCodeBuildDeveloperAccess
-- aws iam get-role --role-name codebuild-role | jq -r '.Arn'
-
-Lastly lets make the build:
-
-- aws codebuild create-project --cli-input-json file://awsCodeBuild.json
-
-- aws codebuild start-build \
-   --project-name tin-analytics
-
-FORGET THIS, go to the aws console and create the project manually.
+The cluster should always be running, with the Database service up and running with the data you need to analyse you can connect to it from outside the cluster with a AWS IAM user in order to update, remove or add new data to the DB. Also you can deploy changes to the analytics service pushing code to the main branch of the server in which case will trigger a codebuild job to update the latest image for the service, if you are completetly sure that the image is working and you want to deploy it to production you just need to redeploy the service (analytics.svc.yml) to the cluster with the following command: kubectl apply -f analytics.svc.yml

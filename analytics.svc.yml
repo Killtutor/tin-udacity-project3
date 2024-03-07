@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: analytics-svc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: analytics-svc
+  template:
+    metadata:
+      labels:
+        app: analytics-svc
+    spec:
+      containers:
+        - name: analytics-svc
+          image: 597532192256.dkr.ecr.us-east-1.amazonaws.com/tin-udacity-repo:latest
+          imagePullPolicy: "Always"
+          ports:
+            - containerPort: 5153
+              protocol: "TCP"
+          livenessProbe:
+            httpGet:
+              path: /health_check
+              port: 5153
+            initialDelaySeconds: 5
+            timeoutSeconds: 2
+          readinessProbe:
+            httpGet:
+              path: "/readiness_check"
+              port: 5153
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
