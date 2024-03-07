@@ -15,6 +15,15 @@ spec:
       containers:
         - name: analytics-svc
           image: 597532192256.dkr.ecr.us-east-1.amazonaws.com/tin-udacity-repo:latest
+          env:
+            - name: DB_HOST
+              value: "postgress-db-postgresql"
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_USERNAME
+              value: "postgres"
+            - name: DB_PASSWORD
+              value: "CvfO247Sw0"
           imagePullPolicy: "Always"
           ports:
             - containerPort: 5153

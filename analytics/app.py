@@ -21,7 +21,17 @@ def health_check():
 @app.route("/readiness_check")
 def readiness_check():
     try:
-        count = db.session.query(Token).count()
+        db.session.execute(
+            text(
+                """
+        SELECT Date(created_at) AS date,
+            Count(*)         AS visits
+        FROM   tokens
+        WHERE  used_at IS NOT NULL
+        GROUP  BY Date(created_at)
+        """
+            )
+        )
     except Exception as e:
         app.logger.error(e)
         return "failed", 500
@@ -31,13 +41,17 @@ def readiness_check():
 
 def get_daily_visits():
     with app.app_context():
-        result = db.session.execute(text("""
+        result = db.session.execute(
+            text(
+                """
         SELECT Date(created_at) AS date,
             Count(*)         AS visits
         FROM   tokens
         WHERE  used_at IS NOT NULL
         GROUP  BY Date(created_at)
-        """))
+        """
+            )
+        )
 
         response = {}
         for row in result:
@@ -55,7 +69,9 @@ def daily_visits():
 
 @app.route("/api/reports/user_visits", methods=["GET"])
 def all_user_visits():
-    result = db.session.execute(text("""
+    result = db.session.execute(
+        text(
+            """
     SELECT t.user_id,
         t.visits,
         users.joined_at
@@ -65,20 +81,19 @@ def all_user_visits():
             GROUP  BY user_id) AS t
         LEFT JOIN users
                 ON t.user_id = users.id;
-    """))
+    """
+        )
+    )
 
     response = {}
     for row in result:
-        response[row[0]] = {
-            "visits": row[1],
-            "joined_at": str(row[2])
-        }
-    
+        response[row[0]] = {"visits": row[1], "joined_at": str(row[2])}
+
     return jsonify(response)
 
 
 scheduler = BackgroundScheduler()
-job = scheduler.add_job(get_daily_visits, 'interval', seconds=30)
+job = scheduler.add_job(get_daily_visits, "interval", seconds=30)
 scheduler.start()
 
 if __name__ == "__main__":
